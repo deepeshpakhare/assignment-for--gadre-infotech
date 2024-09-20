@@ -1,24 +1,32 @@
 import './App.css';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useId } from "react";
 import Server from './API/server';
+import ProductForm from './components/ProductForm';
+import { v4 as uuidv4 } from 'uuid';
 
-Server();
+
+//Server();
 function App() {
-  const [reminders, setReminders] = useState([])
+  const [forms, setForms] = useState([]);
 
-  useEffect(() => {
-    fetch("/api/reminders")
-      .then((response) => response.json())
-      .then((json) => setReminders(json.reminders))
-  }, [])
+  const handleAddForm = () => {
+    setForms([...forms, { id: uuidv4(), name: `form${uuidv4()}` }])
+  }
+  
+  const removeForm = (id) => {
+    setForms(forms.filter((form) => form.id != id))
+  }
   return (
-    <div className="App">
-     <ul>
-        {reminders.map((reminder) =>
-        <li key={reminder.id}>
-          {reminder.text}
-        </li>)}
-    </ul>
+    <div>
+      <button onClick={handleAddForm}> Add</button>
+      <ul style={{listStyle: "none"}}>
+        {forms.map((form) =>
+          <li key={form.id}>
+            <ProductForm name={form.name} id={form.id} removeSelf={removeForm}/>
+          </li>
+        )
+        }
+      </ul>
     </div>
   );
 }

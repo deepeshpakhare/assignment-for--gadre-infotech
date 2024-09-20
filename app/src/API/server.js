@@ -4,24 +4,17 @@ import {createServer, Model} from "miragejs";
 export default function Server () {
   createServer({
     models: {
-      reminder: Model,
+      product: Model,
     },
 
     routes() {
-      this.get("/api/reminders", () => ({
-        reminders: [
-          { id: 1, text: "Walk the dog" },
-          { id: 2, text: "Take out the trash" },
-          { id: 3, text: "Work out" },
-        ],
-      }))
+      this.get("/api/products", (schema) => {
+        return schema.products.all()
+      })
 
-      let newId = 4
-      this.post("/api/reminders", (schema, request) => {
+      this.post("/api/products", (schema, request) => {
         let attrs = JSON.parse(request.requestBody)
-        attrs.id = newId++
-
-        return { reminder: attrs }
+        return schema.products.create(attrs)
       })
     },
   })
