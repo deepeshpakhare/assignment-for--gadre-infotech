@@ -1,23 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
+import { useState, useEffect } from "react";
+import Server from './API/server';
 
+Server();
 function App() {
+  const [reminders, setReminders] = useState([])
+
+  useEffect(() => {
+    fetch("/api/reminders")
+      .then((response) => response.json())
+      .then((json) => setReminders(json.reminders))
+  }, [])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+     <ul>
+        {reminders.map((reminder) =>
+        <li key={reminder.id}>
+          {reminder.text}
+        </li>)}
+    </ul>
     </div>
   );
 }
