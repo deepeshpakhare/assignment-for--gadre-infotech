@@ -5,27 +5,31 @@ import ProductForm from './components/ProductForm';
 import { v4 as uuidv4 } from 'uuid';
 
 const appStyle = {
+  width: "100vw",
   backgroundColor: "#F8F8F8",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-  justifyContent: "center"
+  justifyContent: "flex-start",
+  flexWrap: 'wrap',
 }
 
 const listStyle = {
+  width: "100vw",
   marginLeft: '10px',
   listStyle: "none",
   display:'flex',
-  flexDirection: 'column',
+  flexDirection: 'row',
   justifyContent: 'center',
   alignItems:'center',
-  rowGap: "1px"
+  rowGap: "5px",
+  flexWrap: 'wrap',
 }
 
 Server();
 
 function App() {
-  const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}` }]);
+  const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}`}]);
   const formRefs = useRef([]);
 
 
@@ -72,19 +76,19 @@ function App() {
   return (
     <div style={appStyle}>
       <button onClick={handleAddForm}> Add</button>
-      <ul style={listStyle}>
-        {forms.map((form, index) =>
-          <li key={form.id}>
+      <div style={listStyle}>
+        {forms.map((form, index, arr) =>
+          <span key={form.id}>
             <ProductForm
               name={form.name}
               id={form.id}
               removeSelf={removeForm}
               index={index}
               ref={addRefs}/>
-          </li>
+          </span>
         )
         }
-      </ul>
+      </div>
       <button onClick={handleSubmit}>Submit All</button>
     </div>
   );
