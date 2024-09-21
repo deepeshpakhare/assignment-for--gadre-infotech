@@ -20,12 +20,13 @@ function ProductForm({ name, id, removeSelf}, ref) {
     };
     const handleChange = (e) => {
         const {name, value} = e.target;
-        setFormData((prevData) => ({...prevData, [name]: value}));
-        console.log(formData);
+        setFormData((prevData) => ({...prevData, [name]: value, id}));
+        //console.log(formData);
     }
 
     useImperativeHandle(ref, () => ({
         getValues: ()=> formData,
+        emptyFormData: ()=> setFormData({})
     }));
 
     
@@ -49,7 +50,6 @@ function ProductForm({ name, id, removeSelf}, ref) {
                 initialValues={{
                     remember: true,
                 }}
-                id='form'
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"

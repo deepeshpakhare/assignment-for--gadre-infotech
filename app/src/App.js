@@ -19,14 +19,26 @@ function App() {
 
   const handleSubmit = () => {
     const formData = formRefs.current.map((ref) => ref?.getValues());
-    for (let i=1; i<=forms.length; i++) {
-        console.log(formData[formData.length-i]);
-    }
+    const newFormData = formData.filter((obj) => obj!==undefined);
+    let formsDataWithIds = newFormData.filter((obj) => obj.id);
+    //console.log(formsDataWithIds);
+    //console.log(result);
+    let result = [];
+    let lastId = formsDataWithIds[0].id;
+   for (let i=0; i<formsDataWithIds.length; i++) {
+      if(formsDataWithIds[i].id !== lastId) {
+        result.push(formsDataWithIds[i-1]);
+        lastId = formsDataWithIds[i].id;
+      }
+   }
+   result.push(formsDataWithIds[formsDataWithIds.length-1]);
+   console.log(result);
+   formRefs.current.map((ref) => ref?.emptyFormData());
   };
 
   const removeForm = (id) => {
     setForms(forms.filter((form) => form.id !== id));
-    formRefs.current = formRefs.current.filter(ref => ref.id !== id);
+    formRefs.current = formRefs.current.filter(ref => ref?.id !== id);
   }
 
   return (
