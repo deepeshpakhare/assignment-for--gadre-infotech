@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Button, Checkbox, Form, Input } from "antd";
 
 
@@ -10,11 +10,26 @@ const formParentStyle = {
     alignItems: 'center',
 }
 
-export default function ProductForm({ name, id, removeSelf }) {
+function ProductForm({ name, id, removeSelf}, ref) {
+    const [formData, setFormData] = useState({});
+    const [inputData, setInputData] = useState("");
 
     const onFinish = (values) => {
-        console.log('Success:', values);
+        //console.log(productNameRef.current.value);
+        return values;
     };
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setFormData((prevData) => ({...prevData, [name]: value}));
+        console.log(formData);
+    }
+
+    useImperativeHandle(ref, () => ({
+        getValues: ()=> formData,
+    }));
+
+    
+   
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
@@ -34,6 +49,7 @@ export default function ProductForm({ name, id, removeSelf }) {
                 initialValues={{
                     remember: true,
                 }}
+                id='form'
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
@@ -48,7 +64,7 @@ export default function ProductForm({ name, id, removeSelf }) {
                         },
                     ]}
                 >
-                    <Input />
+                    <Input name="username" onChange={(e)=>handleChange(e)}/>
                 </Form.Item>
 
                 <Form.Item
@@ -61,18 +77,7 @@ export default function ProductForm({ name, id, removeSelf }) {
                         },
                     ]}
                 >
-                    <Input.Password />
-                </Form.Item>
-
-                <Form.Item
-                    name="remember"
-                    valuePropName="checked"
-                    wrapperCol={{
-                        offset: 8,
-                        span: 16,
-                    }}
-                >
-                    <Checkbox>Remember me</Checkbox>
+                    <Input.Password name="password" onChange={(e)=>handleChange(e)}/>
                 </Form.Item>
 
                 <Form.Item
@@ -81,7 +86,7 @@ export default function ProductForm({ name, id, removeSelf }) {
                         span: 16,
                     }}
                 >
-                    <Button type="primary" htmlType="submit">
+                    <Button type="primary" htmlType="submit" onClick={onFinish}>
                         Submit
                     </Button>
                     <Button type="primary" onClick={()=>removeSelf(id)}>
@@ -92,3 +97,5 @@ export default function ProductForm({ name, id, removeSelf }) {
         </div>
     )
 }
+
+export default  forwardRef(ProductForm);
