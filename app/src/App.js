@@ -4,6 +4,23 @@ import Server from './API/server';
 import ProductForm from './components/ProductForm';
 import { v4 as uuidv4 } from 'uuid';
 
+const appStyle = {
+  backgroundColor: "#F8F8F8",
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  justifyContent: "center"
+}
+
+const listStyle = {
+  marginLeft: '10px',
+  listStyle: "none",
+  display:'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  alignItems:'center',
+  rowGap: "1px"
+}
 
 //Server();
 function App() {
@@ -42,15 +59,16 @@ function App() {
   }
 
   return (
-    <div>
+    <div style={appStyle}>
       <button onClick={handleAddForm}> Add</button>
-      <ul style={{ listStyle: "none" }}>
+      <ul style={listStyle}>
         {forms.map((form, index) =>
           <li key={form.id}>
             <ProductForm
               name={form.name}
               id={form.id}
               removeSelf={removeForm}
+              index={index}
               ref={addRefs}/>
           </li>
         )
