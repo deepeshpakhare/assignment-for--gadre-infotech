@@ -8,11 +8,13 @@ export default function Server () {
     },
 
     routes() {
-      this.get("/api/products", (schema) => {
+      this.namespace = 'api';
+      this.urlPrefix = 'http://localhost:3000';
+      this.get("/products", (schema) => {
         return schema.products.all()
       })
 
-      this.post("/api/products", (schema, request) => {
+      this.post("/products", (schema, request) => {
         let attrs = JSON.parse(request.requestBody)
         return schema.products.create(attrs)
       })

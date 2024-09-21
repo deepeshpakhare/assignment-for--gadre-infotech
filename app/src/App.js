@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 const appStyle = {
   backgroundColor: "#F8F8F8",
   display: "flex",
-  flexDirection: "row",
+  flexDirection: "column",
   alignItems: "center",
   justifyContent: "center"
 }
@@ -22,11 +22,19 @@ const listStyle = {
   rowGap: "1px"
 }
 
-//Server();
+Server();
+
 function App() {
-  const [forms, setForms] = useState([]);
+  const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}` }]);
   const formRefs = useRef([]);
 
+
+  const sendData = (data)  => {
+    fetch("http://localhost:3000/api/products",{
+      method: "POST",
+      body: JSON.stringify(data)
+    });
+  }
   const addRefs = (el) => {
     formRefs.current.push(el);
   }
@@ -41,7 +49,7 @@ function App() {
     //console.log(formsDataWithIds);
     //console.log(result);
     let result = [];
-    let lastId = formsDataWithIds[0].id;
+    let lastId = formsDataWithIds[0]?.id;
    for (let i=0; i<formsDataWithIds.length; i++) {
       if(formsDataWithIds[i].id !== lastId) {
         result.push(formsDataWithIds[i-1]);
@@ -51,11 +59,14 @@ function App() {
    result.push(formsDataWithIds[formsDataWithIds.length-1]);
    console.log(result);
    formRefs.current.map((ref) => ref?.emptyFormData());
+   sendData(result);
   };
 
   const removeForm = (id) => {
     setForms(forms.filter((form) => form.id !== id));
     formRefs.current = formRefs.current.filter(ref => ref?.id !== id);
+    console.log(formRefs.current.length);
+    //formRefs.current.map((ref) => ref?.emptyFormData());
   }
 
   return (
