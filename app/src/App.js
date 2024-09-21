@@ -4,6 +4,7 @@ import Server from './API/server';
 import ProductForm from './components/ProductForm';
 import { v4 as uuidv4 } from 'uuid';
 import { sendData } from './utils/fetchFunctions';
+import { getProducts } from './utils/fetchFunctions';
 
 
 const appStyle = {
@@ -36,14 +37,6 @@ function App() {
   const [submit, setSubmit] = useState(false);
 
 
-  const getProducts = async()=> {
-    const response = await fetch("http://localhost:3000/api/products", {
-      method: "GET",
-  });
-  const products = await response.json();
-  console.log(products);
-  }
-
   const getImage =  async()=> {
     const response = await fetch(`http://localhost:3000/api/image/`, {
       method: "GET",
@@ -71,8 +64,6 @@ function App() {
     const formData = formRefs.current.map((ref) => ref?.getValues());
     const newFormData = formData.filter((obj) => obj!==undefined);
     let formsDataWithIds = newFormData.filter((obj) => obj.id);
-    //console.log(formsDataWithIds);
-    //console.log(result);
     let result = [];
     let lastId = formsDataWithIds[0]?.id;
    for (let i=0; i<formsDataWithIds.length; i++) {

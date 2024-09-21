@@ -4,11 +4,32 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import ProductsDisplay from './components/ProductsDisplay';
+import Navbar from './components/Navbar';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom";
 
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <div>
+                  <Navbar />
+                  <App />
+             </div>,
+  },
+  {
+    path: "/analytics",
+    element: <div>
+                  <Navbar />
+                  <ProductsDisplay/>
+             </div>,
+  },
+]);
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-
-  <App />
+<RouterProvider router={router}></RouterProvider>
 
 );
 

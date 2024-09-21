@@ -26,10 +26,9 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
     const [reset, setReset] = useState(false);
 
     const onFinish = (values) => {
-        console.log(formData);
+        console.log("FORM DATA",formData);
         sendData(formData);
-        setReset(true);
-        setTimeout(()=> setForms(forms.map((form, formIndex) => index== formIndex ? form['id'] = uuidv4():form)), 1000);
+        setTimeout(()=> setForms(forms.map((form, formIndex) => index== formIndex ? { id: uuidv4(), name: `form${uuidv4()}`}: form)), 1000);
     };
 
     const handleChange = (e) => {
