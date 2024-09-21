@@ -32,11 +32,28 @@ function App() {
   const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}`}]);
   const formRefs = useRef([]);
   const [submit, setSubmit] = useState(false);
+  const [responseProducts, setResponseProducts] = useState([])
 
+
+  const getProducts = async()=> {
+    const response = await fetch("http://localhost:3000/api/products", {
+      method: "GET",
+  });
+  const products = await response.json();
+  setResponseProducts(products[0]);
+  console.log(products);
+  }
+
+  const getImage =  async()=> {
+    const response = await fetch(`http://localhost:3000/api/image/`, {
+      method: "GET",
+  })
+  const images = await response.json();
+  console.log(images);
+  }
   useEffect(() => {
-    fetch("http://localhost:3000/api/products", {
-        method: "GET",
-    }).then((response) => console.log(response));
+    getProducts();
+    getImage();
 }, [submit])
 
   const sendData = (data)  => {

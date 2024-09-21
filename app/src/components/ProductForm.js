@@ -18,7 +18,6 @@ const closeButtonStyle = {
 function ProductForm({ name, id, removeSelf, index }, ref) {
     const [formData, setFormData] = useState({});
     const [imageUrl, setImageUrl] = useState("");
-    const [showImage, setShowImage] = useState(true);
 
     const onFinish = (values) => {
         //console.log(productNameRef.current.value);
@@ -40,7 +39,27 @@ function ProductForm({ name, id, removeSelf, index }, ref) {
     };
 
 
+    const customRequest = ({ file, onSuccess, onError }) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('imageUrl', imageUrl); 
+        formData.append("id", id);
 
+        fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+        })
+            .then(response => {
+                if (response.ok) {
+                    onSuccess(null, file);
+                } else {
+                    onError(new Error('Upload failed.'));
+                }
+            })
+            .catch(err => {
+                onError(err);
+            });
+    };
 
     const handleImageChange = (info) => {
         setShowImage(true);
@@ -53,27 +72,6 @@ function ProductForm({ name, id, removeSelf, index }, ref) {
         setImageUrl(URL.createObjectURL(info.file.originFileObj));
     };
 
-    const beforeUpload = (file) => {
-        const isImage = file.type.startsWith('image/');
-        if (!isImage) {
-            message.error('You can only upload image files!');
-        }
-        return isImage;
-    };
-    const onPreview = async (file) => {
-        let src = file.url;
-        if (!src) {
-            src = await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file.originFileObj);
-                reader.onload = () => resolve(reader.result);
-            });
-        }
-        const image = new Image();
-        image.src = src;
-        const imgWindow = window.open(src);
-        imgWindow?.document.write(image.outerHTML);
-    };
     return (
         <div style={formParentStyle}>
             <Card
@@ -128,21 +126,13 @@ function ProductForm({ name, id, removeSelf, index }, ref) {
                     </Form.Item>
                     <Form.Item name="upload" label="Upload">
                         <Upload
-                            //action="/upload" // Your upload endpoint here
+                            customRequest={customRequest}
                             listType="picture-card"
                             onChange={handleImageChange}
-                            onPreview={onPreview}
+                            //onPreview={}
                         >
                             +
                         </Upload>
-
-                        {showImage && <Image
-                            width={100}
-                            src={imageUrl}
-                            style={{ marginTop: 16 }}
-                        />}
-                        <AiFillCloseSquare onClick={() => setShowImage(false)}/>
-
                     </Form.Item>
                     <Form.Item
                         wrapperCol={{
