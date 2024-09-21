@@ -86,7 +86,7 @@ function App() {
    formRefs.current.map((ref) => ref?.emptyFormData());
    sendData(result);
    setSubmit((prev) => !prev);
-   setTimeout(()=> emptyForms(), 1000);
+   setTimeout(()=>setForms(forms.map((form) =>({ id: uuidv4(), name: `form${uuidv4()}` })),1000));
   };
 
   const removeForm = (id) => {

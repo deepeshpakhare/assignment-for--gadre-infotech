@@ -29,7 +29,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
         console.log(formData);
         sendData(formData);
         setReset(true);
-        setTimeout(()=> setForms(forms.map((form)=> ({id: uuidv4(), name: `form${uuidv4()}`})), 1000));
+        setTimeout(()=> setForms(forms.map((form, formIndex) => index== formIndex ? form['id'] = uuidv4():form)), 1000);
     };
 
     const handleChange = (e) => {
