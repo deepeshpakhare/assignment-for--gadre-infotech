@@ -8,7 +8,10 @@ export default function Server() {
       image: Model,
     },
 
+    
     routes() {
+      
+
       this.namespace = 'api';
       this.urlPrefix = 'http://localhost:3000';
       this.get("/products", (schema) => {
@@ -16,8 +19,16 @@ export default function Server() {
       })
 
       this.post("/products", (schema, request) => {
-        let attrs = JSON.parse(request.requestBody)
-        return schema.products.create(attrs)
+        const newProducts = JSON.parse(request.requestBody); 
+        const existingProducts = schema.products.all(); 
+        const existingIds = new Set(existingProducts.models.map(product => product.id));
+        const uniqueProducts = newProducts.filter(product => !existingIds.has(product.id));
+        uniqueProducts.forEach(product => {
+            schema.products.create(product);
+        });
+        return uniqueProducts.length > 0
+            ? { message: 'Products added successfully', products: uniqueProducts }
+            : { message: 'No unique products to add' };
       })
 
       this.post('/upload', (schema, request) => {

@@ -3,6 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import Server from './API/server';
 import ProductForm from './components/ProductForm';
 import { v4 as uuidv4 } from 'uuid';
+import { sendData } from './utils/fetchFunctions';
+
 
 const appStyle = {
   width: "100vw",
@@ -32,7 +34,6 @@ function App() {
   const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}`}]);
   const formRefs = useRef([]);
   const [submit, setSubmit] = useState(false);
-  const [responseProducts, setResponseProducts] = useState([])
 
 
   const getProducts = async()=> {
@@ -40,7 +41,6 @@ function App() {
       method: "GET",
   });
   const products = await response.json();
-  setResponseProducts(products[0]);
   console.log(products);
   }
 
@@ -56,17 +56,15 @@ function App() {
     getImage();
 }, [submit])
 
-  const sendData = (data)  => {
-    fetch("http://localhost:3000/api/products",{
-      method: "POST",
-      body: JSON.stringify(data)
-    });
-  }
   const addRefs = (el) => {
     formRefs.current.push(el);
   }
   const handleAddForm = () => {
     setForms([...forms, { id: uuidv4(), name: `form${uuidv4()}` }]);
+  }
+
+  const emptyForms = () => {
+    setForms([{ id: uuidv4(), name: `form${uuidv4()}`}]);
   }
 
   const handleSubmit = () => {
@@ -88,6 +86,7 @@ function App() {
    formRefs.current.map((ref) => ref?.emptyFormData());
    sendData(result);
    setSubmit((prev) => !prev);
+   setTimeout(()=> emptyForms(), 1000);
   };
 
   const removeForm = (id) => {
@@ -108,7 +107,9 @@ function App() {
               id={form.id}
               removeSelf={removeForm}
               index={index}
-              ref={addRefs}/>
+              ref={addRefs}
+              forms={forms}
+              setForms={setForms}/>
           </span>
         )
         }

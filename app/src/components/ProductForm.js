@@ -1,6 +1,8 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Button, Card, Form, Image, Input, Upload, message } from "antd";
 import { AiFillCloseSquare } from "react-icons/ai";
+import { sendData } from '../utils/fetchFunctions';
+import { v4 as uuidv4 } from 'uuid';
 
 
 const formParentStyle = {
@@ -15,14 +17,21 @@ const closeButtonStyle = {
     color: "red"
 }
 
-function ProductForm({ name, id, removeSelf, index }, ref) {
+function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
     const [formData, setFormData] = useState({});
     const [imageUrl, setImageUrl] = useState("");
+    const [showUpload, setShowUpload] = useState(false);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [previewImage, setPreviewImage] = useState('');
+    const [reset, setReset] = useState(false);
 
     const onFinish = (values) => {
-        //console.log(productNameRef.current.value);
-        return values;
+        console.log(formData);
+        sendData(formData);
+        setReset(true);
+        setTimeout(()=> setForms(forms.map((form)=> ({id: uuidv4(), name: `form${uuidv4()}`})), 1000));
     };
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({ ...prevData, [name]: value.trim(), id }));
@@ -31,7 +40,8 @@ function ProductForm({ name, id, removeSelf, index }, ref) {
 
     useImperativeHandle(ref, () => ({
         getValues: () => formData,
-        emptyFormData: () => setFormData({})
+        emptyFormData: () => setFormData({}),
+        reset: () => reset
     }));
 
     const onFinishFailed = (errorInfo) => {
@@ -42,7 +52,7 @@ function ProductForm({ name, id, removeSelf, index }, ref) {
     const customRequest = ({ file, onSuccess, onError }) => {
         const formData = new FormData();
         formData.append('file', file);
-        formData.append('imageUrl', imageUrl); 
+        formData.append('imageUrl', imageUrl);
         formData.append("id", id);
 
         fetch('/api/upload', {
@@ -62,14 +72,31 @@ function ProductForm({ name, id, removeSelf, index }, ref) {
     };
 
     const handleImageChange = (info) => {
-        setShowImage(true);
-        if (info.file.status === 'done') {
-            message.success(`${info.file.name} file uploaded successfully`);
-        } else if (info.file.status === 'error') {
-            message.error(`${info.file.name} file upload failed.`);
+        const { file, fileList } = info;
+        if (file.status === 'done') {
+            message.success(`${file.name} file uploaded successfully`);
+            setShowUpload(true);
+        } else if (file.status === 'error') {
+            message.error(`${file.name} file upload failed.`);
         }
-        console.log(URL.createObjectURL(info.file.originFileObj));
-        setImageUrl(URL.createObjectURL(info.file.originFileObj));
+        console.log(URL.createObjectURL(file.originFileObj));
+        setImageUrl(URL.createObjectURL(file.originFileObj));
+    };
+
+    const getBase64 = (file) =>
+        new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+        });
+
+    const handlePreview = async (file) => {
+        if (!file.url && !file.preview) {
+            file.preview = await getBase64(file.originFileObj);
+        }
+        setPreviewImage(file.url || file.preview);
+        setPreviewOpen(true);
     };
 
     return (
@@ -129,10 +156,24 @@ function ProductForm({ name, id, removeSelf, index }, ref) {
                             customRequest={customRequest}
                             listType="picture-card"
                             onChange={handleImageChange}
-                            //onPreview={}
-                        >
-                            +
+                            handlePreview={handlePreview}
+                            disabled={showUpload}
+
+                        > +
                         </Upload>
+                        {previewImage && (
+                            <Image
+                                wrapperStyle={{
+                                    display: 'none',
+                                }}
+                                preview={{
+                                    visible: previewOpen,
+                                    onVisibleChange: (visible) => setPreviewOpen(visible),
+                                    afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                                }}
+                                src={previewImage}
+                            />
+                        )}
                     </Form.Item>
                     <Form.Item
                         wrapperCol={{
