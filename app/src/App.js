@@ -31,7 +31,13 @@ Server();
 function App() {
   const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}`}]);
   const formRefs = useRef([]);
+  const [submit, setSubmit] = useState(false);
 
+  useEffect(() => {
+    fetch("http://localhost:3000/api/products", {
+        method: "GET",
+    }).then((response) => console.log(response));
+}, [submit])
 
   const sendData = (data)  => {
     fetch("http://localhost:3000/api/products",{
@@ -64,6 +70,7 @@ function App() {
    console.log(result);
    formRefs.current.map((ref) => ref?.emptyFormData());
    sendData(result);
+   setSubmit((prev) => !prev);
   };
 
   const removeForm = (id) => {
