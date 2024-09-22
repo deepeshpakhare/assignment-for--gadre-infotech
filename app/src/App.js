@@ -35,7 +35,7 @@ function App() {
   const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}`}]);
   const formRefs = useRef([]);
   const [submit, setSubmit] = useState(false);
-
+  //const [formData, setFormData] = useState([]);
 
   const getImage =  async()=> {
     const response = await fetch(`http://localhost:3000/api/image/`, {
@@ -59,22 +59,43 @@ function App() {
   const emptyForms = () => {
     setForms([{ id: uuidv4(), name: `form${uuidv4()}`}]);
   }
-
+ 
   const handleSubmit = () => {
-    const formData = formRefs.current.map((ref) => ref?.getValues());
-    const newFormData = formData.filter((obj) => obj!==undefined);
-    let formsDataWithIds = newFormData.filter((obj) => obj.id);
-    let result = [];
-    let lastId = formsDataWithIds[0]?.id;
-   for (let i=0; i<formsDataWithIds.length; i++) {
-      if(formsDataWithIds[i].id !== lastId) {
-        result.push(formsDataWithIds[i-1]);
-        lastId = formsDataWithIds[i].id;
+    //formRefs.current.map((ref) => ref?.formClick());
+   const formData = formRefs.current.map((ref) => ref?.getValues());
+    console.log("new form data is ",formData)
+    const newFormData = formData.filter((obj) => obj?.length>0)
+    console.log("NEW fORM DATA", newFormData);
+    const map = new Map(newFormData.map(item => [item[0].id, item]));
+    const filteredMap = new Map(
+      Array.from(map.entries()).filter(([key, value]) => {
+          return value.some(item => item.productName && item.category);
+      })
+  );
+    const mapArray = Array.from(filteredMap).flat(Infinity);
+    let result= [];
+    for (let i=0; i<mapArray.length; i++) {
+      if(i%2 !== 0) {
+        result.push(mapArray[i]);
       }
+    }
+  /*result.push(newFormData[newFormData.length-1])*
+    /*const newFormData = formData.filter((obj) => obj!==undefined);*/
+    //let newFormData = newFormData.filter((obj) => obj.id);
+    /*const keys = Object.keys(newFormData);
+    let result = [];
+    let lastIndex = 0;
+   for (let i =0; i<keys.length; i++) {
+       if(newFormData[i].length == 1){
+        console.log("i : ",i,newFormData[i-1])
+       }
    }
-   result.push(formsDataWithIds[formsDataWithIds.length-1]);
-   console.log(result);
+   //}
+   //result.push(newFormData[newFormData.length-1]);
+   console.log("app result",result);*/
+   //formRefs.current.map((ref) => ref?.formClick);
    formRefs.current.map((ref) => ref?.emptyFormData());
+   //console.log("FORM DATA",formData);
    sendData(result);
    setSubmit((prev) => !prev);
    setTimeout(()=>setForms(forms.map((form) =>({ id: uuidv4(), name: `form${uuidv4()}` })),1000));
@@ -100,7 +121,8 @@ function App() {
               index={index}
               ref={addRefs}
               forms={forms}
-              setForms={setForms}/>
+              setForms={setForms}
+              onSubmit={setSubmit}/>
           </span>
         )
         }

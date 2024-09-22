@@ -24,7 +24,7 @@ export default function ProductsDisplay() {
             <ul>
                 {products.map((prod, index) =>
                     <li key={index}>
-                        {prod.username}
+                        {prod.productName}
                     </li>
                 )}
             </ul>

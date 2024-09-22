@@ -1,8 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Button, Card, Form, Image, Input, Upload, message } from "antd";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { sendData } from '../utils/fetchFunctions';
 import { v4 as uuidv4 } from 'uuid';
+import Password from 'antd/es/input/Password';
 
 
 const formParentStyle = {
@@ -17,34 +18,39 @@ const closeButtonStyle = {
     color: "red"
 }
 
-function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
+function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit}, ref) {
     const [formData, setFormData] = useState([]);
     const [imageUrl, setImageUrl] = useState("");
     const [showUpload, setShowUpload] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
     const [previewImage, setPreviewImage] = useState('');
-    const [reset, setReset] = useState(false);
+    const [productName, setProductName] = useState("");
+    const [category, setCategory] = useState("");
+    const buttonRef = useRef(null);
+
+    useEffect(()=>setFormData((prev)=>[{productName, category, id}]),[productName, category, id])
 
     const onFinish = (values) => {
-        console.log("FORM DATA",formData);
+        //console.log("FORM DATA",formData);
+        setFormData((prev)=>[{productName, category, id}]);
         sendData(formData);
         setTimeout(()=> setForms(forms.map((form, formIndex) => index== formIndex ? { id: uuidv4(), name: `form${uuidv4()}`}: form)), 1000);
     };
 
-    const handleChange = (e) => {
+    /*const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => [...prevData,{[name]: value.trim(), id }]);
-        //console.log(formData);
+        console.log(formData);
     }
-
+*/
     useImperativeHandle(ref, () => ({
+        //formClick: () => buttonRef.current?.click(),
         getValues: () => formData,
-        emptyFormData: () => setFormData({}),
-        reset: () => reset
+        emptyFormData: () => setFormData([]),
     }));
 
     const onFinishFailed = (errorInfo) => {
-        console.log('Failed:', errorInfo);
+        //console.log('Failed:', errorInfo);
     };
 
 
@@ -135,12 +141,14 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
                             },
                         ]}
                     >
-                        <Input name="username" onChange={(e) => handleChange(e)} />
+                        <Input name="productName" 
+                            value={productName}
+                        onChange={(e) => setProductName(e.target.value)} />
                     </Form.Item>
 
                     <Form.Item
-                        label="Password"
-                        name="password"
+                        label="category"
+                        name="categoryItem"
                         rules={[
                             {
                                 required: true,
@@ -148,7 +156,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
                             },
                         ]}
                     >
-                        <Input.Password name="password" onChange={(e) => handleChange(e)} />
+                        <Input.Password name="category" value={category} onChange={(e) =>setCategory(e.target.value)} />
                     </Form.Item>
                     <Form.Item name="upload" label="Upload">
                         <Upload
@@ -180,7 +188,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
                             span: 16,
                         }}
                     >
-                        <Button type="primary" htmlType="submit" onClick={onFinish}>
+                        <Button ref={buttonRef} id={`submitbtn${id}`} type="primary" htmlType="submit" onClick={onFinish}>
                             Submit
                         </Button>
 
