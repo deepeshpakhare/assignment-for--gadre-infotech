@@ -20,7 +20,7 @@ export default function Server() {
         const newProducts = JSON.parse(request.requestBody); 
         const existingProducts = schema.products.all(); 
         const existingIds = new Set(existingProducts.models.map(product => product.id));
-        const uniqueProducts = newProducts.filter(product => !existingIds.has(product.id));
+        const uniqueProducts = newProducts?.filter(product => !existingIds.has(product.id));
         uniqueProducts.forEach(product => {
             schema.products.create(product);
         });

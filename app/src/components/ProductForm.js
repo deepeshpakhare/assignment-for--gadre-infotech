@@ -18,7 +18,7 @@ const closeButtonStyle = {
 }
 
 function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState([]);
     const [imageUrl, setImageUrl] = useState("");
     const [showUpload, setShowUpload] = useState(false);
     const [previewOpen, setPreviewOpen] = useState(false);
@@ -33,7 +33,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms }, ref) {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value.trim(), id }));
+        setFormData((prevData) => [...prevData,{[name]: value.trim(), id }]);
         //console.log(formData);
     }
 
