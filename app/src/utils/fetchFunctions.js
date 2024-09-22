@@ -12,3 +12,11 @@ export const getProducts = async () => {
     const products = await response.json();
     return products;
 }
+
+export const getImages = async () => {
+    const response = await fetch("http://localhost:3000/api/image", {
+        method: "GET",
+    });
+    const images = await response.json();
+    return images;
+}

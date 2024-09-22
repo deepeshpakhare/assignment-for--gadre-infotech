@@ -18,7 +18,7 @@ const closeButtonStyle = {
     color: "red"
 }
 
-function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit}, ref) {
+function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit }, ref) {
     const [formData, setFormData] = useState([]);
     const [imageUrl, setImageUrl] = useState("");
     const [showUpload, setShowUpload] = useState(false);
@@ -26,23 +26,18 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit}, 
     const [previewImage, setPreviewImage] = useState('');
     const [productName, setProductName] = useState("");
     const [category, setCategory] = useState("");
+    const [quantity, setQuantity] = useState("");
     const buttonRef = useRef(null);
 
-    useEffect(()=>setFormData((prev)=>[{productName, category, id}]),[productName, category, id])
+    useEffect(() => setFormData((prev) => [{ productName, category, id, quantity }]), [productName, category, id, quantity])
 
     const onFinish = (values) => {
         //console.log("FORM DATA",formData);
-        setFormData((prev)=>[{productName, category, id}]);
+        setFormData((prev) => [{ productName, category, id, quantity}]);
         sendData(formData);
-        setTimeout(()=> setForms(forms.map((form, formIndex) => index== formIndex ? { id: uuidv4(), name: `form${uuidv4()}`}: form)), 1000);
+        setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
     };
 
-    /*const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData((prevData) => [...prevData,{[name]: value.trim(), id }]);
-        console.log(formData);
-    }
-*/
     useImperativeHandle(ref, () => ({
         //formClick: () => buttonRef.current?.click(),
         getValues: () => formData,
@@ -141,9 +136,9 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit}, 
                             },
                         ]}
                     >
-                        <Input name="productName" 
+                        <Input name="productName"
                             value={productName}
-                        onChange={(e) => setProductName(e.target.value)} />
+                            onChange={(e) => setProductName(e.target.value)} />
                     </Form.Item>
 
                     <Form.Item
@@ -156,43 +151,55 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit}, 
                             },
                         ]}
                     >
-                        <Input.Password name="category" value={category} onChange={(e) =>setCategory(e.target.value)} />
-                    </Form.Item>
-                    <Form.Item name="upload" label="Upload">
-                        <Upload
-                            customRequest={customRequest}
-                            listType="picture-card"
-                            onChange={handleImageChange}
-                            handlePreview={handlePreview}
-                            disabled={showUpload}
+                        <Input name="category" value={category} onChange={(e) => setCategory(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item
+                            label="quantity"
+                            name="quantityitem"
+                            rules={[
+                                {
+                                    required: true,
+                                    message: 'Please input your password!',
+                                },
+                            ]}
+                        >
+                            <Input name="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                        </Form.Item>
+                        <Form.Item name="upload" label="Upload">
+                            <Upload
+                                customRequest={customRequest}
+                                listType="picture-card"
+                                onChange={handleImageChange}
+                                handlePreview={handlePreview}
+                                disabled={showUpload}
 
-                        > +
-                        </Upload>
-                        {previewImage && (
-                            <Image
-                                wrapperStyle={{
-                                    display: 'none',
-                                }}
-                                preview={{
-                                    visible: previewOpen,
-                                    onVisibleChange: (visible) => setPreviewOpen(visible),
-                                    afterOpenChange: (visible) => !visible && setPreviewImage(''),
-                                }}
-                                src={previewImage}
-                            />
-                        )}
-                    </Form.Item>
-                    <Form.Item
-                        wrapperCol={{
-                            offset: 8,
-                            span: 16,
-                        }}
-                    >
-                        <Button ref={buttonRef} id={`submitbtn${id}`} type="primary" htmlType="submit" onClick={onFinish}>
-                            Submit
-                        </Button>
+                            > +
+                            </Upload>
+                            {previewImage && (
+                                <Image
+                                    wrapperStyle={{
+                                        display: 'none',
+                                    }}
+                                    preview={{
+                                        visible: previewOpen,
+                                        onVisibleChange: (visible) => setPreviewOpen(visible),
+                                        afterOpenChange: (visible) => !visible && setPreviewImage(''),
+                                    }}
+                                    src={previewImage}
+                                />
+                            )}
+                        </Form.Item>
+                        <Form.Item
+                            wrapperCol={{
+                                offset: 8,
+                                span: 16,
+                            }}
+                        >
+                            <Button ref={buttonRef} id={`submitbtn${id}`} type="primary" htmlType="submit" onClick={onFinish}>
+                                Submit
+                            </Button>
 
-                    </Form.Item>
+                        </Form.Item>
                 </Form>
 
             </Card>
