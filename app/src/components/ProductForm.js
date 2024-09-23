@@ -28,11 +28,46 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
     const [category, setCategory] = useState("");
     const [quantity, setQuantity] = useState("");
     const buttonRef = useRef(null);
+    const [hasClicked, setHasClicked] = useState(false);
+
 
     useEffect(() => setFormData((prev) => [{ productName, category, id, quantity }]), [productName, category, id, quantity])
 
+    const areAllFieldFilled = () => {
+        const allFields = {
+            isProductName: productName,
+            isCategory: category,
+            isQuantity: quantity,
+            isImage: imageUrl,
+        }
+        if(allFields.isProductName === "") {
+            alert("Please fill product name");
+            return false;
+        }
+        if(allFields.isCategory === "") {
+            alert("Please select category");
+            return false;
+        }
+        if(allFields.isQuantity==="") {
+            alert("Please fill quantity");
+            return false;
+        }
+        if(isNaN(allFields.isQuantity)) {
+            alert("Qunatity has to be a number");
+            return false;
+        }
+        if(allFields.isImage === "") {
+            alert("Please select image");
+            return false;
+        }
+        return true;
+    }
+
     const onFinish = (values) => {
         //console.log("FORM DATA",values);
+        if(!areAllFieldFilled()){
+            return;
+        }
         setFormData((prev) => [{ productName, category, id, quantity }]);
         sendData(formData);
         setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
@@ -48,9 +83,9 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
         //console.log('Failed:', errorInfo);
     };
 
-   const handleChange = (value) => {
+    const handleChange = (value) => {
         setCategory(value);
-   }
+    }
 
     const customRequest = ({ file, onSuccess, onError }) => {
         const formData = new FormData();
@@ -79,6 +114,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
         if (file.status === 'done') {
             message.success(`${file.name} file uploaded successfully`);
             setShowUpload(true);
+            setHasClicked(true);
         } else if (file.status === 'error') {
             message.error(`${file.name} file upload failed.`);
         }
@@ -100,6 +136,11 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
         }
         setPreviewImage(file.url || file.preview);
         setPreviewOpen(true);
+    };
+
+    const handleBeforeUpload = (file) => {
+        setHasClicked(true); 
+        return true;
     };
 
     return (
@@ -173,7 +214,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
                                     value: 'category3',
                                     label: 'Category3',
                                 },
-                                
+
                             ]}
                         />
                     </Form.Item>
@@ -196,7 +237,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
                             onChange={handleImageChange}
                             handlePreview={handlePreview}
                             disabled={showUpload}
-
+                            handleBeforeUpload={handleBeforeUpload}
                         > +
                         </Upload>
                         {previewImage && (
