@@ -75,6 +75,7 @@ function App() {
         result.push(mapArray[i]);
       }
     }
+  console.log("result",result);
    formRefs.current.map((ref) => ref?.emptyFormData());
    sendData(result);
    setSubmit((prev) => !prev);

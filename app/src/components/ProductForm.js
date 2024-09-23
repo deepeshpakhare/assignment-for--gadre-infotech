@@ -155,7 +155,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
                         ]}
                     >
                         <Select
-                            defaultValue="category1"
+                            defaultValue="select category"
                             style={{
                                 width: 145,
                             }}
