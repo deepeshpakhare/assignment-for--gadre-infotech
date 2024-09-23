@@ -194,7 +194,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your password!',
+                                message: 'Please select category!',
                             },
                         ]}
                     >
@@ -227,7 +227,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
                         rules={[
                             {
                                 required: true,
-                                message: 'Please input your password!',
+                                message: 'Please enter quantity',
                             },
                         ]}
                     >
