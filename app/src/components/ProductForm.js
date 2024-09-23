@@ -1,5 +1,5 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Button, Card, Form, Image, Input, Upload, message } from "antd";
+import { Alert, Button, Card, Form, Image, Input, Upload, message } from "antd";
 import { AiFillCloseSquare } from "react-icons/ai";
 import { sendData } from '../utils/fetchFunctions';
 import { v4 as uuidv4 } from 'uuid';
@@ -15,7 +15,7 @@ const formParentStyle = {
 }
 
 const closeButtonStyle = {
-    color: "red"
+    color: "#6CB4EE",
 }
 
 function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit }, ref) {
@@ -29,6 +29,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
     const [quantity, setQuantity] = useState("");
     const buttonRef = useRef(null);
     const [hasClicked, setHasClicked] = useState(false);
+    const [success, setSuccess] = useState(false);
 
 
     useEffect(() => setFormData((prev) => [{ productName, category, id, quantity }]), [productName, category, id, quantity])
@@ -40,24 +41,24 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
             isQuantity: quantity,
             isImage: imageUrl,
         }
-        if(allFields.isProductName === "") {
-            alert("Please fill product name");
+        if (allFields.isProductName === "") {
+            message.error("Please fill product name");
             return false;
         }
-        if(allFields.isCategory === "") {
-            alert("Please select category");
+        if (allFields.isCategory === "") {
+            message.error("Please select category");
             return false;
         }
-        if(allFields.isQuantity==="") {
-            alert("Please fill quantity");
+        if (allFields.isQuantity === "") {
+            message.error("Please fill quantity");
             return false;
         }
-        if(isNaN(allFields.isQuantity)) {
-            alert("Qunatity has to be a number");
+        if (isNaN(allFields.isQuantity)) {
+            message.error("Qunatity has to be a number");
             return false;
         }
-        if(allFields.isImage === "") {
-            alert("Please select image");
+        if (allFields.isImage === "") {
+            message.error("Please select image");
             return false;
         }
         return true;
@@ -65,11 +66,12 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
 
     const onFinish = (values) => {
         //console.log("FORM DATA",values);
-        if(!areAllFieldFilled()){
+        if (!areAllFieldFilled()) {
             return;
         }
         setFormData((prev) => [{ productName, category, id, quantity }]);
         sendData(formData);
+        message.success("Done!")
         setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
     };
 
@@ -140,7 +142,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
     };
 
     const handleBeforeUpload = (file) => {
-        setHasClicked(true); 
+        setHasClicked(true);
         return true;
     };
 

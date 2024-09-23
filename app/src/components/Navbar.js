@@ -1,19 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Menu, Space } from 'antd';
 
-const navabarStyle = {
-    display: 'flex',
-    flexDirection: 'row',
-    gap: "10px",
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-}
 
 export default function Navbar() {
+  const [current, setCurrent] = useState('');
+
+  const items = [
+    {
+        label: (
+            <Link to={"/"}><h3>Add Products</h3> </Link>
+            
+        ),
+        key: "products"
+    },
+    {
+        label: (
+            <Link to={"/analytics"}><h3>Analytics</h3></Link>
+           
+        ),
+        key: "analytics"
+    },
+  ]
+
+  const onClick = (e) => {
+    setCurrent(e.key);
+  };
   return (
-    <div style={navabarStyle}>
-        <h1><Link to={"/"}>Products</Link></h1>
-        <h1><Link to={"/analytics"}>Analytics</Link></h1>
+    <div>
+        <Menu style={{height: 80}} onClick={onClick} selectedKeys={[current]} mode="horizontal" items={items} />
     </div>
   )
 }

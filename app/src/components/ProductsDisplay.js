@@ -16,6 +16,15 @@ const displayStyle = {
     gap: "150px"
 }
 
+const tableStyle = {
+    marginTop: 10,
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    gap: "5px"
+}
+
 
 export default function ProductsDisplay() {
     const [products, setProducts] = useState([]);
@@ -100,8 +109,8 @@ export default function ProductsDisplay() {
 
     return (
         <div style={displayStyle}>
-            <div>
-                <Button onClick={generatePDF} type="primary" style={{ width: 90, height: 40, marginLeft: 300, marginBottom: 10 }}><AiFillFilePdf size={30} /></Button>
+            <div style={tableStyle}>
+                <Button onClick={generatePDF} type="primary" style={{ width: 90, height: 40, marginLeft: 10, marginBottom: 5 }}><AiFillFilePdf size={30} /></Button>
                 <div ref={tableRef}>
                     <h2>List of products</h2>
                     <Table dataSource={dataSource} columns={columns} style={{ width: 400 }} />

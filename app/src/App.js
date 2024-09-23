@@ -5,7 +5,9 @@ import ProductForm from './components/ProductForm';
 import { v4 as uuidv4 } from 'uuid';
 import { sendData } from './utils/fetchFunctions';
 import { getProducts } from './utils/fetchFunctions';
-import { isValidated } from './utils/validations';
+import { Button, message } from 'antd';
+
+
 
 const appStyle = {
   width: "100vw",
@@ -70,10 +72,6 @@ function App() {
   );
     const mapArray = Array.from(filteredMap).flat(Infinity);
     console.log("MAP ARRAY",mapArray," FORMREF LENGTH ",forms.length);
-    if(mapArray.length == 0 || mapArray.length < forms.length) {
-      alert("Please fill all the fields in every form");
-      return;
-    }
     let result= [];
     for (let i=0; i<mapArray.length; i++) {
       if(i%2 !== 0) {
@@ -82,12 +80,13 @@ function App() {
     }
     console.log(result, result.length)
     if(result.length == 0 || result.length < forms.length) {
-      alert("Please fill all the fields in every form");
+      message.error("Please fill all the fields in every form");
       return;
     }
   console.log("result",result);
    formRefs.current.map((ref) => ref?.emptyFormData());
    sendData(result);
+   message.success("Done!");
    setSubmit((prev) => !prev);
    setTimeout(()=>setForms(forms.map((form) =>({ id: uuidv4(), name: `form${uuidv4()}` })),1000));
   };
@@ -100,7 +99,7 @@ function App() {
 
   return (
     <div style={appStyle}>
-      <button onClick={handleAddForm}> Add</button>
+      <Button type='primary' style={{marginTop:10}} onClick={handleAddForm}> Add Form</Button>
       <div style={listStyle}>
         {forms.map((form, index, arr) =>
           <span key={form.id}>
@@ -117,7 +116,7 @@ function App() {
         )
         }
       </div>
-      <button onClick={handleSubmit}>Submit All</button>
+      <Button style={{marginTop: 10}} type="primary" onClick={handleSubmit}>Submit All</Button>
     </div>
   );
 }
