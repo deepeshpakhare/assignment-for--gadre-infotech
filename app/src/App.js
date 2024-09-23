@@ -56,10 +56,6 @@ function App() {
     setForms([...forms, { id: uuidv4(), name: `form${uuidv4()}` }]);
   }
 
-  const emptyForms = () => {
-    setForms([{ id: uuidv4(), name: `form${uuidv4()}`}]);
-  }
- 
   const handleSubmit = () => {
     //formRefs.current.map((ref) => ref?.formClick());
    const formData = formRefs.current.map((ref) => ref?.getValues());
@@ -79,23 +75,7 @@ function App() {
         result.push(mapArray[i]);
       }
     }
-  /*result.push(newFormData[newFormData.length-1])*
-    /*const newFormData = formData.filter((obj) => obj!==undefined);*/
-    //let newFormData = newFormData.filter((obj) => obj.id);
-    /*const keys = Object.keys(newFormData);
-    let result = [];
-    let lastIndex = 0;
-   for (let i =0; i<keys.length; i++) {
-       if(newFormData[i].length == 1){
-        console.log("i : ",i,newFormData[i-1])
-       }
-   }
-   //}
-   //result.push(newFormData[newFormData.length-1]);
-   console.log("app result",result);*/
-   //formRefs.current.map((ref) => ref?.formClick);
    formRefs.current.map((ref) => ref?.emptyFormData());
-   //console.log("FORM DATA",formData);
    sendData(result);
    setSubmit((prev) => !prev);
    setTimeout(()=>setForms(forms.map((form) =>({ id: uuidv4(), name: `form${uuidv4()}` })),1000));
@@ -105,7 +85,6 @@ function App() {
     setForms(forms.filter((form) => form.id !== id));
     formRefs.current = formRefs.current.filter(ref => ref?.id !== id);
     console.log(formRefs.current.length);
-    //formRefs.current.map((ref) => ref?.emptyFormData());
   }
 
   return (

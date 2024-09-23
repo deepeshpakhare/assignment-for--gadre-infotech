@@ -1,12 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getImages, getProducts } from '../utils/fetchFunctions';
-import { Table } from 'antd';
-import { render } from '@testing-library/react';
+import { Table, Button } from 'antd';
+import { AiFillFilePdf } from "react-icons/ai";
+import jsPDF from 'jspdf'; 
+import html2canvas from 'html2canvas';   
+
+const displayStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: "10px"
+}
+
 
 export default function ProductsDisplay() {
     const [products, setProducts] = useState([]);
     const [images, setImages] = useState([]);
     const [dataSource, setDataSource] = useState([]);
+    const tableRef = useRef(null); 
 
     useEffect(() => {
         setDataSource(createDataObject({ productsResponse: products, imagesResponse: images }));
@@ -41,9 +53,7 @@ export default function ProductsDisplay() {
         }
         for (let res of result) {
             for (let img of imagesResponse) {
-                //console.log(res.id, img.id)
                 if (res.key == img.id) {
-                    //alert("yes");
                     res["imageUrl"] = img.imageUrl;
                 }
             }
@@ -51,6 +61,7 @@ export default function ProductsDisplay() {
         console.log(result);
         return result;
     }
+
     const columns = [
         {
             title: "Image",
@@ -75,12 +86,22 @@ export default function ProductsDisplay() {
         },
 
     ];
-
+    const generatePDF = async () => {
+        const input = tableRef.current; 
+        const canvas = await html2canvas(input); 
+        const imgData = canvas.toDataURL('image/png'); 
+        const doc = new jsPDF(); 
+        doc.addImage(imgData, 'PNG', 10, 10);
+        doc.save('table.pdf'); 
+    }
+    
     return (
-        <div>
-            <h1>Display</h1>
-            <center><Table dataSource={dataSource} columns={columns} style={{ width: 700 }}/></center>
-
+        <div style={displayStyle}>
+            <Button onClick={generatePDF} type="primary" style={{width:50, height:50}}><AiFillFilePdf size={50}/></Button>
+            <div ref={tableRef}>
+                <h2>List of products</h2>
+                <Table  dataSource={dataSource} columns={columns} style={{ width: 400 }} />
+            </div>
         </div>
     )
 }
