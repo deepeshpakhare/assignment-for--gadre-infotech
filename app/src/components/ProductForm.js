@@ -77,6 +77,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
         //formClick: () => buttonRef.current?.click(),
         getValues: () => formData,
         emptyFormData: () => setFormData([]),
+        areAllFieldFilled: () => areAllFieldFilled()
     }));
 
     const onFinishFailed = (errorInfo) => {

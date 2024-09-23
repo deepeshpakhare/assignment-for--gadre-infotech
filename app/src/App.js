@@ -5,7 +5,7 @@ import ProductForm from './components/ProductForm';
 import { v4 as uuidv4 } from 'uuid';
 import { sendData } from './utils/fetchFunctions';
 import { getProducts } from './utils/fetchFunctions';
-
+import { isValidated } from './utils/validations';
 
 const appStyle = {
   width: "100vw",
@@ -65,15 +65,25 @@ function App() {
     const map = new Map(newFormData.map(item => [item[0].id, item]));
     const filteredMap = new Map(
       Array.from(map.entries()).filter(([key, value]) => {
-          return value.some(item => item.productName && item.category);
+          return value.some(item => item.productName && item.category && item.quantity);
       })
   );
     const mapArray = Array.from(filteredMap).flat(Infinity);
+    console.log("MAP ARRAY",mapArray," FORMREF LENGTH ",forms.length);
+    if(mapArray.length == 0 || mapArray.length < forms.length) {
+      alert("Please fill all the fields in every form");
+      return;
+    }
     let result= [];
     for (let i=0; i<mapArray.length; i++) {
       if(i%2 !== 0) {
         result.push(mapArray[i]);
       }
+    }
+    console.log(result, result.length)
+    if(result.length == 0 || result.length < forms.length) {
+      alert("Please fill all the fields in every form");
+      return;
     }
   console.log("result",result);
    formRefs.current.map((ref) => ref?.emptyFormData());
