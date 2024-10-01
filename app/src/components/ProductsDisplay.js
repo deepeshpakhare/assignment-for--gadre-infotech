@@ -32,6 +32,7 @@ export default function ProductsDisplay() {
     const [dataSource, setDataSource] = useState([]);
     const tableRef = useRef(null);
 
+
     useEffect(() => {
         setDataSource(createDataObject({ productsResponse: products, imagesResponse: images }));
     }, [products, images])
@@ -74,6 +75,9 @@ export default function ProductsDisplay() {
         return result;
     }
 
+    const redirectToUpdate = (id) => {
+        console.log(id);
+    }
     const columns = [
         {
             title: "Image",
@@ -96,6 +100,12 @@ export default function ProductsDisplay() {
             dataIndex: 'quantity',
             key: 'quantity',
         },
+        {
+            title: 'Update',
+            dataIndex: "key",
+            key: "update",
+            render:(key)=> <Button onClick={(e) =>redirectToUpdate(key)}>Update</Button>
+        }
 
     ];
     const generatePDF = async () => {
