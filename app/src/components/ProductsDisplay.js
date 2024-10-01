@@ -5,7 +5,7 @@ import { AiFillFilePdf } from "react-icons/ai";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import PieChart from './PieChart';
-
+import { useNavigate } from "react-router-dom";
 
 const displayStyle = {
     marginLeft: 20,
@@ -31,6 +31,7 @@ export default function ProductsDisplay() {
     const [images, setImages] = useState([]);
     const [dataSource, setDataSource] = useState([]);
     const tableRef = useRef(null);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
@@ -76,7 +77,9 @@ export default function ProductsDisplay() {
     }
 
     const redirectToUpdate = (id) => {
+        console.log(dataSource);
         console.log(id);
+        navigate("/", {state:id});
     }
     const columns = [
         {
@@ -103,7 +106,7 @@ export default function ProductsDisplay() {
         {
             title: 'Update',
             dataIndex: "key",
-            key: "update",
+            key: "key",
             render:(key)=> <Button onClick={(e) =>redirectToUpdate(key)}>Update</Button>
         }
 

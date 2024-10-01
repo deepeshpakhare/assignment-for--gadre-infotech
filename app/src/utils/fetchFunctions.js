@@ -20,3 +20,11 @@ export const getImages = async () => {
     const images = await response.json();
     return images;
 }
+
+export const getProductById = async (id) => {
+    const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: "GET",
+    });
+    const product = await response.json();
+    return product;
+} 

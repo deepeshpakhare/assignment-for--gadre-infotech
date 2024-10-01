@@ -18,7 +18,11 @@ export default function Server() {
 
       this.get("/products/:id", (schema, request) => {
         let id = request.params.id;
-        return schema.products.find(id);
+        console.log(id);
+        const existingProducts = schema.products.all(); 
+        const result = existingProducts.filter((prod) => prod.id == id);
+        console.log(result);
+        return result;
       })
       
 
