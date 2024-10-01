@@ -37,8 +37,8 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
         const fetchProduct = async (id) => {
             try{
                 const data = await getProductById(id);
-                setUpdateProduct(data.products);
-                console.log("Data from api ",updateProduct);
+                setFormData(data.products);
+                console.log("Data from api ",formData);
             }catch (err) {
                 console.log("Failed to fetch product");
             }
