@@ -4,6 +4,7 @@ import { AiFillCloseSquare } from "react-icons/ai";
 import { sendData } from '../utils/fetchFunctions';
 import { v4 as uuidv4 } from 'uuid';
 import { Select } from "antd";
+import { uploadImage } from '../utils/fetchFunctions';
 
 
 const formParentStyle = {
@@ -71,6 +72,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
         }
         setFormData((prev) => [{ productName, category, id, quantity }]);
         sendData(formData);
+        uploadImage(imageUrl, id);
         message.success("Done!")
         setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
     };
@@ -146,6 +148,11 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
         return true;
     };
 
+    const setFile = (event) => {
+        setImageUrl(URL.createObjectURL(event.target.files[0]));
+    }
+
+    
     return (
         <div style={formParentStyle}>
             <Card
@@ -233,8 +240,15 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
                     >
                         <Input name="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
                     </Form.Item>
-                    <Form.Item name="upload" label="Upload">
-                        <Upload
+                    <Form.Item name="upload" label="Upload Image">
+                        <Input type='file' onChange={setFile}>
+                        </Input>
+                        <br/>
+                        {imageUrl !== ""&& <Image src={imageUrl} width={145} height={100}></Image>}
+                        {imageUrl !== "" && <br/>}
+                        {imageUrl !== "" && <br/>}
+                        {imageUrl && <Button onClick={() => setImageUrl("")} style={{width:145}}>Delete Image</Button>}
+                       {/* <Upload
                             customRequest={customRequest}
                             listType="picture-card"
                             onChange={handleImageChange}
@@ -255,7 +269,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
                                 }}
                                 src={previewImage}
                             />
-                        )}
+                        )}*/}
                     </Form.Item>
                     <Form.Item
                         wrapperCol={{
