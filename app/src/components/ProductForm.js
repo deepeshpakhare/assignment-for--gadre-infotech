@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Alert, Button, Card, Form, Image, Input, Upload, message } from "antd";
 import { AiFillCloseSquare } from "react-icons/ai";
-import { sendData } from '../utils/fetchFunctions';
+import { getProductById, sendData } from '../utils/fetchFunctions';
 import { v4 as uuidv4 } from 'uuid';
 import { Select } from "antd";
 import { uploadImage } from '../utils/fetchFunctions';
@@ -19,7 +19,7 @@ const closeButtonStyle = {
     color: "#6CB4EE",
 }
 
-function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit }, ref) {
+function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, updateId }, ref) {
     const [formData, setFormData] = useState([]);
     const [imageUrl, setImageUrl] = useState("");
     const [showUpload, setShowUpload] = useState(false);
@@ -31,7 +31,20 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit },
     const buttonRef = useRef(null);
     const [hasClicked, setHasClicked] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [updateProduct, setUpdateProduct] = useState([]);
 
+    useEffect(() => {
+        const fetchProduct = async (id) => {
+            try{
+                const data = await getProductById(id);
+                setUpdateProduct(data.products);
+                console.log("Data from api ",updateProduct);
+            }catch (err) {
+                console.log("Failed to fetch product");
+            }
+        }
+        fetchProduct(updateId);
+    },[updateId])
 
     useEffect(() => setFormData((prev) => [{ productName, category, id, quantity }]), [productName, category, id, quantity])
 

@@ -23,22 +23,3 @@ export const getImages = async () => {
     const images = await response.json();
     return images;
 }
-
-export const uploadImage = (imageUrl, id) => {
-    const formData = new FormData();
-    formData.append("imageUrl", imageUrl);
-    formData.append("id", id);
-    fetch("api/upload",
-        {
-            body: formData,
-            method: "post"
-        }).then((response) => {
-            console.log(response);
-            if(response.status === 201) {
-                message.success("Image Uploaded Successfully")
-            }else{
-                message.error("Failed to upload image");
-            }
-        })
-    
-}
