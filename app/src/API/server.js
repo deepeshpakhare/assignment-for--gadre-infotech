@@ -16,6 +16,12 @@ export default function Server() {
         return schema.products.all()
       })
 
+      this.get("/products/:id", (schema, request) => {
+        let id = request.params.id;
+        return schema.products.find(id);
+      })
+      
+
       this.post("/products", (schema, request) => {
         const newProducts = JSON.parse(request.requestBody); 
         const existingProducts = schema.products.all(); 
