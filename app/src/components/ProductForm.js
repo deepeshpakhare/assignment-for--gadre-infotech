@@ -37,18 +37,18 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
 
     useEffect(() => {
         const fetchProduct = async (id) => {
-            try{
+            try {
                 const data = await getProductById(id);
                 setDefaultProductName(data.products[0].productName);
                 setDefaultCategory(data.products[0].category);
                 setDefaultQuantity(data.products[0].quantity);
-                //console.log("Data from api ",productName);
-            }catch (err) {
+                console.log("Data from api ",id);
+            } catch (err) {
                 console.log("Failed to fetch product");
             }
         }
         fetchProduct(updateId);
-    },[]);
+    }, [updateId]);
 
     useEffect(() => setFormData((prev) => [{ productName, category, id, quantity }]), [productName, category, id, quantity])
 
@@ -87,11 +87,22 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
         if (!areAllFieldFilled()) {
             return;
         }
-        setFormData((prev) => [{ productName, category, id, quantity }]);
-        sendData(formData);
-        uploadImage(imageUrl, id);
-        message.success("Done!")
-        setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
+        if (updateId) {
+            alert("if")
+            setFormData((prev) => [{ productName, category, id:updateId, quantity }]);
+            sendData(formData);
+            uploadImage(imageUrl, id);
+            message.success("Done!");
+            setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
+        } else {
+            alert("else")
+            setFormData((prev) => [{ productName, category, id, quantity }]);
+            sendData(formData);
+            uploadImage(imageUrl, id);
+            message.success("Done!")
+            setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
+        }
+
     };
 
     useImperativeHandle(ref, () => ({
@@ -169,7 +180,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
         setImageUrl(URL.createObjectURL(event.target.files[0]));
     }
 
-    
+
     return (
         <div style={formParentStyle}>
             <Card
@@ -226,7 +237,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
                     >
                         <Select
                             key={deafultCategory}
-                            defaultValue={deafultCategory == ""? "select category": deafultCategory}
+                            defaultValue={deafultCategory == "" ? "select category" : deafultCategory}
                             style={{
                                 width: 145,
                             }}
@@ -263,12 +274,12 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
                     <Form.Item name="upload" label="Upload Image">
                         <Input type='file' onChange={setFile}>
                         </Input>
-                        <br/>
-                        {imageUrl !== ""&& <Image src={imageUrl} width={145} height={100}></Image>}
-                        {imageUrl !== "" && <br/>}
-                        {imageUrl !== "" && <br/>}
-                        {imageUrl && <Button onClick={() => setImageUrl("")} style={{width:145}}>Delete Image</Button>}
-                       {/* <Upload
+                        <br />
+                        {imageUrl !== "" && <Image src={imageUrl} width={145} height={100}></Image>}
+                        {imageUrl !== "" && <br />}
+                        {imageUrl !== "" && <br />}
+                        {imageUrl && <Button onClick={() => setImageUrl("")} style={{ width: 145 }}>Delete Image</Button>}
+                        {/* <Upload
                             customRequest={customRequest}
                             listType="picture-card"
                             onChange={handleImageChange}

@@ -37,7 +37,7 @@ function App() {
   const [forms, setForms] = useState([{ id: uuidv4(), name: `form${uuidv4()}` }]);
   const formRefs = useRef([]);
   const [submit, setSubmit] = useState(false);
-  const [id, setId] = useState("");
+  const [id, setId] = useState(null||"");
   //const [formData, setFormData] = useState([]);
   const location = useLocation();
 
