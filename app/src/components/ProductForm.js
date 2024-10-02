@@ -31,20 +31,24 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
     const buttonRef = useRef(null);
     const [hasClicked, setHasClicked] = useState(false);
     const [success, setSuccess] = useState(false);
-    const [updateProduct, setUpdateProduct] = useState([]);
+    const [defaultProductName, setDefaultProductName] = useState("");
+    const [deafultCategory, setDefaultCategory] = useState("");
+    const [defaultQuantity, setDefaultQuantity] = useState("");
 
     useEffect(() => {
         const fetchProduct = async (id) => {
             try{
                 const data = await getProductById(id);
-                setFormData(data.products);
-                console.log("Data from api ",formData);
+                setDefaultProductName(data.products[0].productName);
+                setDefaultCategory(data.products[0].category);
+                setDefaultQuantity(data.products[0].quantity);
+                //console.log("Data from api ",productName);
             }catch (err) {
                 console.log("Failed to fetch product");
             }
         }
         fetchProduct(updateId);
-    },[updateId])
+    },[]);
 
     useEffect(() => setFormData((prev) => [{ productName, category, id, quantity }]), [productName, category, id, quantity])
 
@@ -204,7 +208,9 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
                         ]}
                     >
                         <Input name="productName"
+                            key={defaultProductName}
                             value={productName}
+                            defaultValue={defaultProductName}
                             onChange={(e) => setProductName(e.target.value)} />
                     </Form.Item>
 
@@ -219,7 +225,8 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
                         ]}
                     >
                         <Select
-                            defaultValue="select category"
+                            key={deafultCategory}
+                            defaultValue={deafultCategory == ""? "select category": deafultCategory}
                             style={{
                                 width: 145,
                             }}
@@ -251,7 +258,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
                             },
                         ]}
                     >
-                        <Input name="quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+                        <Input name="quantity" key={defaultQuantity} defaultValue={defaultQuantity} value={quantity} onChange={(e) => setQuantity(e.target.value)} />
                     </Form.Item>
                     <Form.Item name="upload" label="Upload Image">
                         <Input type='file' onChange={setFile}>
