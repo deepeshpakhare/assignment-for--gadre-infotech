@@ -1,7 +1,7 @@
 import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Alert, Button, Card, Form, Image, Input, Upload, message } from "antd";
 import { AiFillCloseSquare } from "react-icons/ai";
-import { getProductById, sendData } from '../utils/fetchFunctions';
+import { deleteRecord, getProductById, sendData } from '../utils/fetchFunctions';
 import { v4 as uuidv4 } from 'uuid';
 import { Select } from "antd";
 import { uploadImage } from '../utils/fetchFunctions';
@@ -42,7 +42,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
                 setDefaultProductName(data.products[0].productName);
                 setDefaultCategory(data.products[0].category);
                 setDefaultQuantity(data.products[0].quantity);
-                console.log("Data from api ",id);
+                console.log("Data from api ",data.products[0].id);
             } catch (err) {
                 console.log("Failed to fetch product");
             }
@@ -91,6 +91,7 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
             alert("if")
             setFormData((prev) => [{ productName, category, id:updateId, quantity }]);
             sendData(formData);
+            deleteRecord(updateId);
             uploadImage(imageUrl, id);
             message.success("Done!");
             setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);

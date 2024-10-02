@@ -52,7 +52,7 @@ export default function PieChart() {
         result.push(category1);
         result.push(category2);
         result.push(category3);
-        console.log(result);
+        //console.log(result);
         return result;
     }
 

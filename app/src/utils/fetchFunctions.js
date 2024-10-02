@@ -50,3 +50,11 @@ export const getProductById = async (id) => {
     const result = await response.json();
     return result;
 }
+
+export const deleteRecord = async (id) => {
+    const response = await fetch(`http://localhost:3000/api/products/${id}`, {
+        method: "DELETE",
+    });
+    const result = await response.json();
+    return result;
+}

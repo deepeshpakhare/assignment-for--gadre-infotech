@@ -21,10 +21,14 @@ export default function Server() {
         console.log(id);
         const existingProducts = schema.products.all(); 
         const result = existingProducts.filter((prod) => prod.id == id);
-        console.log(result);
         return result;
       })
       
+      this.del("/products/:id", (schema, request) => {
+        let id = request.params.id;
+        schema.products.find(id).destroy();
+        return {message: "Product destroyed successfully"}
+      })
 
       this.post("/products", (schema, request) => {
         const newProducts = JSON.parse(request.requestBody); 
