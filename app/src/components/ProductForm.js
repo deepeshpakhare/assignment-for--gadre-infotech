@@ -42,12 +42,18 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
                 setDefaultProductName(data.products[0].productName);
                 setDefaultCategory(data.products[0].category);
                 setDefaultQuantity(data.products[0].quantity);
-                console.log("Data from api ",data.products[0].id);
+                console.log("Data from api ", data.products[0].id);
             } catch (err) {
                 console.log("Failed to fetch product");
             }
         }
-        fetchProduct(updateId);
+        if (updateId !== "no redirect") {
+            fetchProduct(updateId);
+        } else {
+            setDefaultProductName("");
+            setDefaultCategory("");
+            setDefaultQuantity("");
+        }
     }, [updateId]);
 
     useEffect(() => setFormData((prev) => [{ productName, category, id, quantity }]), [productName, category, id, quantity])
@@ -88,15 +94,15 @@ function ProductForm({ name, id, removeSelf, index, setForms, forms, onSubmit, u
             return;
         }
         if (updateId) {
-            alert("if")
-            setFormData((prev) => [{ productName, category, id:updateId, quantity }]);
+            //alert("if")
+            setFormData((prev) => [{ productName, category, id: updateId, quantity }]);
             sendData(formData);
             deleteRecord(updateId);
             uploadImage(imageUrl, id);
             message.success("Done!");
             setTimeout(() => setForms(forms.map((form, formIndex) => index == formIndex ? { id: uuidv4(), name: `form${uuidv4()}` } : form)), 1000);
         } else {
-            alert("else")
+            //alert("else")
             setFormData((prev) => [{ productName, category, id, quantity }]);
             sendData(formData);
             uploadImage(imageUrl, id);
